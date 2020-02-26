@@ -392,7 +392,7 @@ bool Probe::set_deployed(const bool deploy) {
         _BV(X_AXIS)
       #endif
     )) {
-      SERIAL_ERROR_MSG(MSG_STOP_UNHOMED);
+      SERIAL_ERROR_MSG(STR_STOP_UNHOMED);
       stop();
       return true;
     }
@@ -754,10 +754,8 @@ float Probe::probe_at_point(const float &rx, const float &ry, const ProbePtRaise
   if (!deploy()) measured_z = run_z_probe() + offset.z;
   if (!isnan(measured_z)) {
     const bool big_raise = raise_after == PROBE_PT_BIG_RAISE;
-    if (big_raise || raise_after == PROBE_PT_RAISE) {
-      if (current_position.z < Z_PROBE_OFFSET_RANGE_MAX) // Only raise when in probing range (else error)
-        do_blocking_move_to_z(current_position.z + (big_raise ? 25 : Z_CLEARANCE_BETWEEN_PROBES), MMM_TO_MMS(Z_PROBE_SPEED_FAST));
-    }
+    if (big_raise || raise_after == PROBE_PT_RAISE)
+      do_blocking_move_to_z(current_position.z + (big_raise ? 25 : Z_CLEARANCE_BETWEEN_PROBES), MMM_TO_MMS(Z_PROBE_SPEED_FAST));
     else if (raise_after == PROBE_PT_STOW)
       if (stow()) measured_z = NAN;   // Error on stow?
 
@@ -773,7 +771,7 @@ float Probe::probe_at_point(const float &rx, const float &ry, const ProbePtRaise
   if (isnan(measured_z)) {
     stow();
     LCD_MESSAGEPGM(MSG_LCD_PROBING_FAILED);
-    SERIAL_ERROR_MSG(MSG_ERR_PROBING_FAILED);
+    SERIAL_ERROR_MSG(STR_ERR_PROBING_FAILED);
   }
 
   if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("<<< Probe::probe_at_point");
